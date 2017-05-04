@@ -6,6 +6,8 @@ Welcome to the official Frame.io Swift Style Guide.
 
 We created this style guide to document how we write Swift code at Frame.io and to streamline the code review process. All rules are numbered so they can be linked directly in code review comments. The guide will continue to evolve with the Swift language and our team.
 
+Apple has published a document on [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/) and there are several Swift style guides already, so why write our own? While Apple's guidelines offer a great starting point and plenty of useful examples, some choices are appropriately omitted or left open to interpretation by engineering teams. Our primary goal was to ensure quality, organization, and consistency in our Swift codebases, facilitate discussions about Swift at the company, and to improve our code review process. This goal requires detailed rules on formatting and decisions on conventions that may have multiple acceptable approaches. Other style guides from the community were great resources for us, but we ultimately decided to create our own structure and ideas with the specific goal of code reviews and communication in mind.
+
 ## Table Of Contents
 
 - [1. Organization](#1-organization)
