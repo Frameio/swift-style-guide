@@ -291,7 +291,7 @@ func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath:
 
 * **4.1.5** Use optionals whenever a nil value is possible. Avoid default "empty" values (e.g. "", 0, etc.) when an optional more accurately models the situation.
 
-* **4.1.6** Use failable initializers whenever required properties cannot be guaranteed to have meaningful values.
+* **4.1.6** Use failable or throwing initializers whenever required properties cannot be guaranteed to have meaningful values. Similarly, methods that return a value should return an optional or throw when there is no meaningful default.
 
 ```swift
 class User {
