@@ -49,7 +49,7 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
 ```swift
 let message = "Hello"
 let cats = ["tiger", "leopard", "cheetah", "lion"]
-let backgroundColor = .blue
+view.backgroundColor = .blue
 cancelButton.setTitleColor(.white, for: .normal)
 ```
 
