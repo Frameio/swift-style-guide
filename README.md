@@ -205,7 +205,7 @@ names.map { $0.initials }
 * **2.2.8** When trailing closures cannot be used because of chaining, pad the curly braces with a space on either side.
 
 ```swift
-let beautifulFileCount = files.filter( { $0.shouldCount } ).count
+let fileCount = files.filter( { $0.shouldCount } ).count
 ```
 
 ## 3. Naming
