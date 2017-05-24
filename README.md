@@ -202,10 +202,10 @@ names.map { $0.initials }
 
 * **2.2.7** Avoid using a semicolon at the end of a line.
 
-* **2.2.8** When trailing closures cannot be used because of chaining pad the curly brackets with a space on either side.
+* **2.2.8** When trailing closures cannot be used because of chaining, pad the curly braces with a space on either side.
 
 ```swift
-let beautifulFileCount = notifications.filter( { FrameIO.session?.notificationData?.file(for: $0) != nil } ).count
+let beautifulFileCount = files.filter( { $0.shouldCount } ).count
 ```
 
 ## 3. Naming
