@@ -208,6 +208,12 @@ names.map { $0.initials }
 let fileCount = files.filter( { $0.shouldCount } ).count
 ```
 
+* **2.2.9** When using binary and ternary operators, add a space before and after the operator.
+
+```swift
+let aspectRatio = width / height
+```
+
 ## 3. Naming
 
 ### 3.1 Casing and Namespaces
