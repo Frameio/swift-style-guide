@@ -322,6 +322,21 @@ class User {
 
 * **4.1.7** Use the `final` keyword when a class, method, property, or subscript is not being overridden (application) or should never be overridden (framework). Using the `final` keyword has value both in modeling inheritance constraints and in improving compile times.
 
+* **4.1.8** When setting delegate properties, use the property setting directly. Avoid passing the delegate in an initializer or configuration method.
+
+```swift
+class SomeManager {
+
+    weak var delegate: SomeManagerDelegate?
+
+}
+```
+
+```swift
+let manager = SomeManager()
+manager.delegate = self
+```
+
 ### 4.2 Safety
 
 * **4.2.1** Use implicitly unwrapped optionals and forced unwrapping only when a property, constant, or variable is guaranteed to be non-nil (e.g. IBOutlets, casting a table or collection view cell to a custom subclass). Conditional unwrapping (`if let`, `guard let`) is always preferred.
