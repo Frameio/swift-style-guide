@@ -237,7 +237,6 @@ let urlString = ...
 
 * **3.1.4** Use `strongSelf` when unwrapping `[weak self]` in closures. This clarifies that you've used the safely unwrapped version, as opposed to assigning to `self`, which obscures the weak to strong relationship.
 
-
 ### 3.2 Clarity and Semantics
 
 * **3.2.1** Avoid abbreviations and shorthand (e.g. `index` NOT `idx`)
@@ -449,7 +448,6 @@ extension Frameio: FolderViewController.EndpointProviding {}
 * **5.5.1** A `DataSource` object should only be responsible for holding onto a static representation, or snapshot, of data at any given time.
 
 * **5.5.2** Similar to `view`s, these objects should be "dumb" and not know anything besides their current state/what a proper representation of that state is. 
-
 
 ## References
 
