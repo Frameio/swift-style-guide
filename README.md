@@ -28,9 +28,9 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [4.3 Control Flow](#43-control-flow)
     - [4.4 Access Control](#44-access-control)
 - [5. Architecture](#5-architecture)
-    - [5.1 View Controllers](#51-view-controllers)
+    - [5.1 ViewControllers](#51-view-controllers)
     - [5.2 Views](#52-views)
-    - [5.3 Endpoint Providers and Wrappers](#53-endpoint-providers-and-wrappers)
+    - [5.3 EndpointProviders and EndpointWrappers](#53-endpoint-providers-and-wrappers)
     - [5.4 Coordinators](#54-coordinators)
     - [5.5 DataSources](#55-datasources)
 
@@ -401,7 +401,7 @@ public internal(set) var userName: String
 
 ## 5. Architecture
 
-### 5.1 View Controllers
+### 5.1 ViewControllers
 
 * **5.1.1** `ViewControllers` should act as conduit between components and views. They pass messages between views, coordinators, and helper classes.
 
@@ -417,7 +417,7 @@ public internal(set) var userName: String
 
 * **5.2.3** Callbacks from views should be handled by delegation or closures. We should not rely on notification center for messages from a view.
 
-### 5.3 Endpoint Providers/Wrappers
+### 5.3 EndpointProviders and EndpointWrappers
 
 * **5.3.1** For simple endpoint interactions, use a protocol with the name `<context>EndpointProviding`. If composing existing endpoint providing protocols, this should be a nested typealias in the context it belongs to.
 ```swift
