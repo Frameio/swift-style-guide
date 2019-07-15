@@ -352,23 +352,31 @@ manager.delegate = self
 ```swift
 guard let message = message, 
     let recipients = message.recipients,
-    !recipients.isEmpty else {
-        return
-}
+    !recipients.isEmpty 
+    else { return }
 ```
 
-* **4.3.3** Use a switch statement (instead of `guard let` or `if let`) where possible when there are multiple conditions and order does not matter.
+* **4.3.3** Use a single line break after multi-line `guard` statements
+```swift 
+guard let asset = asset,
+    let file = asset.file
+    else { return }
+    
+print(file.displayName)
+```
+
+* **4.3.4** Use a switch statement (instead of `guard let` or `if let`) where possible when there are multiple conditions and order does not matter.
 
 ```switch
 switch segue.destination {
-case is MessagesViewController:
+case let messagesViewController as MessagesViewController:
     /* ... */
-case is CompanyDirectoryViewController:
+case let companyDirectoryViewController as CompanyDirectoryViewController:
     /* ... */
 }
 ```
 
-* **4.3.4** Avoid exiting a method that the caller expects will do something without handling all possible cases. Consider making a method throw or return a value to accomplish this. If a method only needs to do something if a condition is met, make that clear in the method name (e.g. "layoutIfNeeded").
+* **4.3.5** Avoid exiting a method that the caller expects will do something without handling all possible cases. Consider making a method throw or return a value to accomplish this. If a method only needs to do something if a condition is met, make that clear in the method name (e.g. "layoutIfNeeded").
 
 ### 4.4 Access Control
 
