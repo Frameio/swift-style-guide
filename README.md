@@ -28,9 +28,9 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [4.3 Control Flow](#43-control-flow)
     - [4.4 Access Control](#44-access-control)
 - [5. Architecture](#5-architecture)
-    - [5.1 ViewControllers](#51-view-controllers)
+    - [5.1 ViewControllers](#51-viewcontrollers)
     - [5.2 Views](#52-views)
-    - [5.3 EndpointProviders and EndpointWrappers](#53-endpoint-providers-and-wrappers)
+    - [5.3 EndpointProviders and EndpointWrappers](#53-endpointproviders-and-endpointwrappers)
     - [5.4 Coordinators](#54-coordinators)
     - [5.5 DataSources](#55-datasources)
 
@@ -433,7 +433,7 @@ extension Frameio: FolderViewController.EndpointProviding {}
 
 * **5.3.3** Endpoint providers and wrappers should not be doubly wrapped. They should be composed from other providers, and use the least number of dependencies possible.
 
-### 5.4 Coordinator
+### 5.4 Coordinators
 
 * **5.4.1** A `coordinator` pattern is used to coordinate the presentation of navigation and remove the need for a `viewController` to know about another `viewController`.
 
