@@ -27,6 +27,12 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [4.2 Safety](#42-safety)
     - [4.3 Control Flow](#43-control-flow)
     - [4.4 Access Control](#44-access-control)
+- [5. Architecture](#5-architecture)
+    - [5.1 View Controllers](#51-view-controllers)
+    - [5.2 Views](#52-views)
+    - [5.3 Endpoint Providers and Wrappers](#53-endpoint-providers-and-wrappers)
+    - [5.4 Coordinators](#54-coordinators)
+    - [5.5 DataSources](#55-datasources)
 
 ## 1. Organization
 
@@ -64,9 +70,9 @@ var welcomeMessage: String {
 }
 ```
 
-* **1.2.5** Avoid full generics syntax when shorthand is available (`[String]`, NOT `Array<String>`).
+* **1.2.6** Avoid full generics syntax when shorthand is available (`[String]`, NOT `Array<String>`).
 
-* **1.2.6** Use trailing closure syntax when there is a single closure parameter at the end of the argument list. Do not use trailing closure syntax otherwise.
+* **1.2.7** Use trailing closure syntax when there is a single closure parameter at the end of the argument list. Do not use trailing closure syntax otherwise.
 
 ```swift
 UIView.animate(withDuration: 1.0) {
@@ -229,6 +235,9 @@ let thumbnailURL = ...
 let urlString = ...
 ```
 
+* **3.1.4** Use `strongSelf` when unwrapping `[weak self]` in closures. This clarifies that you've used the safely unwrapped version, as opposed to assigning to `self`, which obscures the weak to strong relationship.
+
+
 ### 3.2 Clarity and Semantics
 
 * **3.2.1** Avoid abbreviations and shorthand (e.g. `index` NOT `idx`)
@@ -389,6 +398,58 @@ public internal(set) var userName: String
 ```
 
 * **4.4.3** Prefer lower access control levels. In frameworks, only the public-facing interface should be marked `public` or `open`. Where possible, `private` should be used instead of `fileprivate`. However, proper use of extensions for good code organization is more important than the preference for `private` over `fileprivate`.
+
+## 5. Architecture
+
+### 5.1 View Controllers
+
+* **5.1.1** `ViewControllers` should act as conduit between components and views. They pass messages between views, coordinators, and helper classes.
+
+* **5.1.2** `ViewControllers` should have as few view references as possible. This can be done by wrapping the view logic in a single `contentView: UIView`, which holds the view hierarchy.
+
+* **5.1.3** If a `ViewController` is growing too large, it should be broken into child `ViewControllers `which can each maintain a single responsibility.
+
+### 5.2 Views
+
+* **5.2.1** A `view` should be as "dumb" as possible, meaning that they should only be responsible for displaying `viewModel` data, and handing off user input.
+
+* **5.2.2** Logic for how to process an interaction should be handled by a `view`'s `viewController`.
+
+* **5.2.3** Callbacks from views should be handled by delegation or closures. We should not rely on notification center for messages from a view.
+
+### 5.3 Endpoint Providers/Wrappers
+
+* **5.3.1** For simple endpoint interactions, use a protocol with the name `<context>EndpointProviding`. If composing existing endpoint providing protocols, this should be a nested typealias in the context it belongs to.
+```swift
+class FolderViewController {
+
+    typealias EndpointProviding = FolderEndpointProviding & MemberEndpointProviding
+    
+}
+
+extension Frameio: FolderViewController.EndpointProviding {}
+```
+
+* **5.3.2** For more complicated endpoint interactions (i.e. pagination, cancellation, and grouping of endpoint calls), use a class with the name `<context>EndpointWrapper`. Its single responsibility is managing API interactions.
+
+* **5.3.3** Endpoint providers and wrappers should not be doubly wrapped. They should be composed from other providers, and use the least number of dependencies possible.
+
+### 5.4 Coordinator
+
+* **5.4.1** A `coordinator` pattern is used to coordinate the presentation of navigation and remove the need for a `viewController` to know about another `viewController`.
+
+* **5.4.2** `Coordinator`s should not make API calls/handle complex logic.
+
+* **5.4.3** A `coordinator` can have properties that do not change over its lifetime. If a coordinator needs to update its core properties/state, it is a sign that that aspect of the coordinator should be moved into a `childCoordinator` or a `viewController`. For example, a `FolderNavigationCoordinator` may have a `project` that it is responsible for, but would not have a changing `folder`, since that is maintained by its children.
+
+* **5.4.4** A coordinator can call back to its parent coordinator by creating a `<Name>NavigationCoordinatorParent`, keeping a weak reference to the parent with this protocol, and using those functions to pass data up the coordinator chain.
+
+### 5.5 DataSources
+
+* **5.5.1** A `DataSource` object should only be responsible for holding onto a static representation, or snapshot, of data at any given time.
+
+* **5.5.2** Similar to `view`s, these objects should be "dumb" and not know anything besides their current state/what a proper representation of that state is. 
+
 
 ## References
 
