@@ -262,24 +262,27 @@ func swap<T>(_ a: inout T, _ b: inout T)
 * **3.2.5** Use assertive names for Boolean methods and properties when the use is non-mutating (e.g. `isEmpty`, `canSendMessage`, `intersects`, `shouldFade`).
 
 * **3.2.6** Use only the language in method, function, and parameter names required to convey meaning at the point of use.
+        ✅ `func doAction(withItem item: Item)`
+        ❌ `func doAction(with item: Item)`
+        ❌ `func doActionWithItem(_ item: Item)`
 
 ```swift
 class ProjectTableViewCell: UITableViewCell {
 
-    func configure(with project: Project) {
+    func configure(withProject project: Project) {
         /* ... */
     }
 
 }
 
 extension List {
-    public mutating func remove(at position: Index) -> Element
+    public mutating func remove(atPosition position: Index) -> Element
 }
 
 func presentAlert(withTitle title: String, message: String)
 ```
 
-* **3.2.7** Use the same name for the optional and unwrapped value when simply unwrapping optionals. When doing more advanced optional binding, different names may be used.
+* **3.2.8** Use the same name for the optional and unwrapped value when simply unwrapping optionals. When doing more advanced optional binding, different names may be used.
 
 ```swift
 guard let message = message else { return }
