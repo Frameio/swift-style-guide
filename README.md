@@ -33,6 +33,7 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [5.3 EndpointProviders and EndpointWrappers](#53-endpointproviders-and-endpointwrappers)
     - [5.4 Coordinators](#54-coordinators)
     - [5.5 DataSources](#55-datasources)
+    - [5.5 Singletons](#56-singletons)
 
 ## 1. Organization
 
@@ -103,9 +104,11 @@ extension SomeClass: SomeProtocol {
 
 * **1.3.3** Extract types and extensions into separate files where appropriate to ensure files are small and easy to navigate. Multiple small, related types and extensions may be grouped together where it makes sense.
 
-* **1.3.4** Organize files into logical groups, and ensure the file system mirrors the Xcode project navigator.
+* **1.3.4** Add fileprivate extensions when extended logic is only useful within the context of the current file.
 
-* **1.3.5** Embed types in containing types when they make sense or are used only within the context of another type.
+* **1.3.5** Organize files into logical groups, and ensure the file system mirrors the Xcode project navigator.
+
+* **1.3.6** Embed types in containing types when they make sense or are used only within the context of another type.
 
 ```swift
  struct Card {
@@ -262,18 +265,21 @@ func swap<T>(_ a: inout T, _ b: inout T)
 * **3.2.5** Use assertive names for Boolean methods and properties when the use is non-mutating (e.g. `isEmpty`, `canSendMessage`, `intersects`, `shouldFade`).
 
 * **3.2.6** Use only the language in method, function, and parameter names required to convey meaning at the point of use.
+        ✅ `func doAction(withItem item: Item)`
+        ❌ `func doAction(with item: Item)`
+        ❌ `func doActionWithItem(_ item: Item)`
 
 ```swift
 class ProjectTableViewCell: UITableViewCell {
 
-    func configure(with project: Project) {
+    func configure(withProject project: Project) {
         /* ... */
     }
 
 }
 
 extension List {
-    public mutating func remove(at position: Index) -> Element
+    public mutating func remove(atPosition position: Index) -> Element
 }
 
 func presentAlert(withTitle title: String, message: String)
@@ -288,6 +294,28 @@ if let movie = item as? Movie {
     /* ... */
 }
 ```
+
+* **3.2.8** Use a static context struct when possible. Ensure that only value types are passed in these contexts, that they are properly namespaced, and only the necessary values are used.
+
+```swift
+extension MyViewController {
+
+    struct Context {
+        let userID: String
+        let accountID: String
+    }
+
+}
+```
+
+* **3.2.9** Be consistent with naming for `init` and `configure` function parameters. Pass in static context first, then variable properties (with `initial<propertyName>` naming), and then dependencies.
+```swift
+func configure(withContext context: Context,
+               initialState: State,
+               endpointProvider: EndpointProviding) { ... }
+```
+
+
 
 ### 3.3 Code Reviews, Articles, and Documentation
 
@@ -448,6 +476,18 @@ extension Frameio: FolderViewController.EndpointProviding {}
 * **5.5.1** A `DataSource` object should only be responsible for holding onto a static representation, or snapshot, of data at any given time.
 
 * **5.5.2** Similar to `view`s, these objects should be "dumb" and not know anything besides their current state/what a proper representation of that state is. 
+
+### 5.6 Singletons
+
+* **5.4.1** Singletons are an acceptable pattern when (and only when) they have a non-mutating global state that is used throughout the app. The object should have no properties that get updated throughout its lifetime. Even when used, they should be passed via protocol wrapping and dependency injection.
+
+``` swift
+struct AppImageLoaders {
+
+    static let avatarLoader: ImageLoader = { ... }()
+
+}
+```
 
 ## References
 
