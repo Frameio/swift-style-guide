@@ -33,6 +33,7 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [5.3 EndpointProviders and EndpointWrappers](#53-endpointproviders-and-endpointwrappers)
     - [5.4 Coordinators](#54-coordinators)
     - [5.5 DataSources](#55-datasources)
+    - [5.5 Singletons](#56-singletons)
 
 ## 1. Organization
 
@@ -103,9 +104,11 @@ extension SomeClass: SomeProtocol {
 
 * **1.3.3** Extract types and extensions into separate files where appropriate to ensure files are small and easy to navigate. Multiple small, related types and extensions may be grouped together where it makes sense.
 
-* **1.3.4** Organize files into logical groups, and ensure the file system mirrors the Xcode project navigator.
+* **1.3.4** Add fileprivate extensions when extended logic is only useful within the context of the current file.
 
-* **1.3.5** Embed types in containing types when they make sense or are used only within the context of another type.
+* **1.3.5** Organize files into logical groups, and ensure the file system mirrors the Xcode project navigator.
+
+* **1.3.6** Embed types in containing types when they make sense or are used only within the context of another type.
 
 ```swift
  struct Card {
@@ -282,7 +285,7 @@ extension List {
 func presentAlert(withTitle title: String, message: String)
 ```
 
-* **3.2.8** Use the same name for the optional and unwrapped value when simply unwrapping optionals. When doing more advanced optional binding, different names may be used.
+* **3.2.7** Use the same name for the optional and unwrapped value when simply unwrapping optionals. When doing more advanced optional binding, different names may be used.
 
 ```swift
 guard let message = message else { return }
@@ -291,6 +294,28 @@ if let movie = item as? Movie {
     /* ... */
 }
 ```
+
+* **3.2.8** Use a static context struct when possible. Ensure that only value types are passed in these contexts, that they are properly namespaced, and only the necessary values are used.
+
+```swift
+extension MyViewController {
+
+    struct Context {
+        let userID: String
+        let accountID: String
+    }
+
+}
+```
+
+* **3.2.9** Be consistent with naming for `init` and `configure` function parameters. Pass in static context first, then variable properties (with `initial<propertyName>` naming), and then dependencies.
+```swift
+func configure(withContext context: Context,
+               initialState: State,
+               endpointProvider: EndpointProviding) { ... }
+```
+
+
 
 ### 3.3 Code Reviews, Articles, and Documentation
 
@@ -451,6 +476,18 @@ extension Frameio: FolderViewController.EndpointProviding {}
 * **5.5.1** A `DataSource` object should only be responsible for holding onto a static representation, or snapshot, of data at any given time.
 
 * **5.5.2** Similar to `view`s, these objects should be "dumb" and not know anything besides their current state/what a proper representation of that state is. 
+
+### 5.6 Singletons
+
+* **5.4.1** Singletons are an acceptable pattern when (and only when) they have a non-mutating global state that is used throughout the app. The object should have no properties that get updated throughout its lifetime. Even when used, they should be passed via protocol wrapping and dependency injection.
+
+``` swift
+struct AppImageLoaders {
+
+    static let avatarLoader: ImageLoader = { ... }()
+
+}
+```
 
 ## References
 
