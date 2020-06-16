@@ -40,7 +40,7 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
 ### 1.1 Comments
 
 * **1.1.1** Remove extraneous comments at the top of a source file. Include only applicable legal rights, licenses, and attribution. Git blame can be used to determine when code was written and who wrote it.
-* **1.1.2** Avoid explanatory comments. Code should be self-documenting through carefully considered structure, descriptive names, and good organization.
+* **1.1.2** Avoid explanatory comments where redundant. Code should be self-documenting through carefully considered structure, descriptive names, and good organization. If code is especially unintuitive (e.g. using specific domain knowledge, or a complex algorithm) comments should be used per-function or per-class.
 * **1.1.3** Ensure documentation comments follow the guidelines found in Apple's [Markup Formatting Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_markup_formatting_ref/).
 
 ### 1.2 Unnecessary Code
@@ -71,9 +71,14 @@ var welcomeMessage: String {
 }
 ```
 
-* **1.2.6** Avoid full generics syntax when shorthand is available (`[String]`, NOT `Array<String>`).
+* **1.2.6** Omit the `return` keyword for one-line computed properties.
+```swift
+var size: CGSize { CGSize(width: width, height: height) }
+```
 
-* **1.2.7** Use trailing closure syntax when there is a single closure parameter at the end of the argument list. Do not use trailing closure syntax otherwise.
+* **1.2.7** Avoid full generics syntax when shorthand is available (`[String]`, NOT `Array<String>`).
+
+* **1.2.8** Use trailing closure syntax when there is a single closure parameter at the end of the argument list. Do not use trailing closure syntax otherwise.
 
 ```swift
 UIView.animate(withDuration: 1.0) {
@@ -111,11 +116,9 @@ extension SomeClass: SomeProtocol {
 * **1.3.6** Embed types in containing types when they make sense or are used only within the context of another type.
 
 ```swift
- struct Card {
+class MyView: UIView {
 
-    enum Suit: Character { }
-
-    enum Rank: Int { }
+    struct ViewModel { }
 
 }
 ```
@@ -176,6 +179,7 @@ let airports: [String: String] = [
 
 * **2.1.7** Write multiple code statements on separate lines. Separating multiple statements on a single line using semicolons is allowed in Swift but should be avoided.
 
+
 ## 2.2 Whitespace, Brackets, Parentheses, and Punctuation
 
 * **2.2.1** Add one space after a colon. Do not add a space before the colon. Exceptions to this rule include the ternary operator `? :`, an empty dictionary `[:]`, and `#selector` syntax `(_:)`.
@@ -211,10 +215,13 @@ names.map { $0.initials }
 
 * **2.2.7** Avoid using a semicolon at the end of a line.
 
-* **2.2.8** When trailing closures cannot be used because of chaining, pad the curly braces with a space on either side.
+* **2.2.8** When using function chaining, use multiple lines to separate complex groups of functions
 
 ```swift
-let fileCount = files.filter( { $0.shouldCount } ).count
+let validFileCount = folderItems
+    .compactMap { $0 as? File }
+    .filter { $0.isValid }
+    .count
 ```
 
 * **2.2.9** When using binary and ternary operators, add a space before and after the operator.
@@ -222,6 +229,8 @@ let fileCount = files.filter( { $0.shouldCount } ).count
 ```swift
 let aspectRatio = width / height
 ```
+
+* **2.2.10** Do not leave additional whitespace after any line, including separating newlines. (Xcode > Preferences > Text Editing > Editing > While Editing: > Automatically trim trailing whitespace. Including whitespace-only lines)
 
 ## 3. Naming
 
@@ -264,7 +273,7 @@ func swap<T>(_ a: inout T, _ b: inout T)
 
 * **3.2.5** Use assertive names for Boolean methods and properties when the use is non-mutating (e.g. `isEmpty`, `canSendMessage`, `intersects`, `shouldFade`).
 
-* **3.2.6** Use only the language in method, function, and parameter names required to convey meaning at the point of use.
+* **3.2.6** Use only the language in method, function, and parameter names required to convey meaning at the point of use. This keeps our funtions descriptive when using auto-complete, and keeps our alignment further left for readability.
         ✅ `func doAction(withItem item: Item)`
         ❌ `func doAction(with item: Item)`
         ❌ `func doActionWithItem(_ item: Item)`
@@ -295,27 +304,12 @@ if let movie = item as? Movie {
 }
 ```
 
-* **3.2.8** Use a static context struct when possible. Ensure that only value types are passed in these contexts, that they are properly namespaced, and only the necessary values are used.
-
-```swift
-extension MyViewController {
-
-    struct Context {
-        let userID: String
-        let accountID: String
-    }
-
-}
-```
-
 * **3.2.9** Be consistent with naming for `init` and `configure` function parameters. Pass in static context first, then variable properties (with `initial<propertyName>` naming), and then dependencies.
 ```swift
 func configure(withContext context: Context,
                initialState: State,
                endpointProvider: EndpointProviding) { ... }
 ```
-
-
 
 ### 3.3 Code Reviews, Articles, and Documentation
 
@@ -329,9 +323,9 @@ func configure(withContext context: Context,
 
 * **4.1.2** Use classes only when things have identity or should use reference semantics. Use structs in all other cases.
 
-* **4.1.3** Use computed properties instead of methods where possible (i.e. no parameters, returns an object or value).
+* **4.1.3** Use computed properties instead of methods for simple transforming fetches (i.e. no parameters, returns an object or value, complexity is ≤ O(1)). 
 
-* **4.1.4** Include the delegate source as the first, unnamed parameter in a delegate method.
+* **4.1.4** Include the delegate source as the first, unnamed parameter in a delegate method, using the same syntax as Apple's delegate functions:
 
 ```swift
 func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -361,7 +355,7 @@ class User {
 * **4.1.8** When setting delegate properties, use the property setting directly. Avoid passing the delegate in an initializer or configuration method.
 
 ```swift
-class SomeManager {
+final class SomeManager {
 
     weak var delegate: SomeManagerDelegate?
 
@@ -425,69 +419,6 @@ public internal(set) var userName: String
 ```
 
 * **4.4.3** Prefer lower access control levels. In frameworks, only the public-facing interface should be marked `public` or `open`. Where possible, `private` should be used instead of `fileprivate`. However, proper use of extensions for good code organization is more important than the preference for `private` over `fileprivate`.
-
-## 5. Architecture
-
-### 5.1 ViewControllers
-
-* **5.1.1** `ViewControllers` should act as conduit between components and views. They pass messages between views, coordinators, and helper classes.
-
-* **5.1.2** `ViewControllers` should have as few view references as possible. This can be done by wrapping the view logic in a single `contentView: UIView`, which holds the view hierarchy.
-
-* **5.1.3** If a `ViewController` is growing too large, it should be broken into child `ViewControllers `which can each maintain a single responsibility.
-
-### 5.2 Views
-
-* **5.2.1** A `view` should be as "dumb" as possible, meaning that they should only be responsible for displaying `viewModel` data, and handing off user input.
-
-* **5.2.2** Logic for how to process an interaction should be handled by a `view`'s `viewController`.
-
-* **5.2.3** Callbacks from views should be handled by delegation or closures. We should not rely on notification center for messages from a view.
-
-### 5.3 EndpointProviders and EndpointWrappers
-
-* **5.3.1** For simple endpoint interactions, use a protocol with the name `<context>EndpointProviding`. If composing existing endpoint providing protocols, this should be a nested typealias in the context it belongs to.
-```swift
-class FolderViewController {
-
-    typealias EndpointProviding = FolderEndpointProviding & MemberEndpointProviding
-    
-}
-
-extension Frameio: FolderViewController.EndpointProviding {}
-```
-
-* **5.3.2** For more complicated endpoint interactions (i.e. pagination, cancellation, and grouping of endpoint calls), use a class with the name `<context>EndpointWrapper`. Its single responsibility is managing API interactions.
-
-* **5.3.3** Endpoint providers and wrappers should not be doubly wrapped. They should be composed from other providers, and use the least number of dependencies possible.
-
-### 5.4 Coordinators
-
-* **5.4.1** A `coordinator` pattern is used to coordinate the presentation of navigation and remove the need for a `viewController` to know about another `viewController`.
-
-* **5.4.2** `Coordinator`s should not make API calls/handle complex logic.
-
-* **5.4.3** A `coordinator` can have properties that do not change over its lifetime. If a coordinator needs to update its core properties/state, it is a sign that that aspect of the coordinator should be moved into a `childCoordinator` or a `viewController`. For example, a `FolderNavigationCoordinator` may have a `project` that it is responsible for, but would not have a changing `folder`, since that is maintained by its children.
-
-* **5.4.4** A coordinator can call back to its parent coordinator by creating a `<Name>NavigationCoordinatorParent`, keeping a weak reference to the parent with this protocol, and using those functions to pass data up the coordinator chain.
-
-### 5.5 DataSources
-
-* **5.5.1** A `DataSource` object should only be responsible for holding onto a static representation, or snapshot, of data at any given time.
-
-* **5.5.2** Similar to `view`s, these objects should be "dumb" and not know anything besides their current state/what a proper representation of that state is. 
-
-### 5.6 Singletons
-
-* **5.4.1** Singletons are an acceptable pattern when (and only when) they have a non-mutating global state that is used throughout the app. The object should have no properties that get updated throughout its lifetime. Even when used, they should be passed via protocol wrapping and dependency injection.
-
-``` swift
-struct AppImageLoaders {
-
-    static let avatarLoader: ImageLoader = { ... }()
-
-}
-```
 
 ## References
 
