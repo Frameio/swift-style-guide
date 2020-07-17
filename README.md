@@ -27,13 +27,6 @@ Apple has published a document on [Swift API Design Guidelines](https://swift.or
     - [4.2 Safety](#42-safety)
     - [4.3 Control Flow](#43-control-flow)
     - [4.4 Access Control](#44-access-control)
-- [5. Architecture](#5-architecture)
-    - [5.1 ViewControllers](#51-viewcontrollers)
-    - [5.2 Views](#52-views)
-    - [5.3 EndpointProviders and EndpointWrappers](#53-endpointproviders-and-endpointwrappers)
-    - [5.4 Coordinators](#54-coordinators)
-    - [5.5 DataSources](#55-datasources)
-    - [5.5 Singletons](#56-singletons)
 
 ## 1. Organization
 
