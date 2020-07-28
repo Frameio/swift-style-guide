@@ -187,9 +187,9 @@ func someMethod(
 func invokeSomeMethod() {
     /* ... */
     someMethod(
-      authorName: authorName,
-      project: project,
-      comment: comment
+        authorName: authorName,
+        project: project,
+        comment: comment
     )
 }
 ```
