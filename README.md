@@ -173,6 +173,27 @@ let airports: [String: String] = [
 * **2.1.7** Write multiple code statements on separate lines. Separating multiple statements on a single line using semicolons is allowed in Swift but should be avoided.
 
 
+* **2.1.8** In function or type declarations, if there are more than 2 arguments or the column width rule is
+  violated, use line breaks for each argument to improve readability.
+```swift
+func someMethod(
+    authorName: String,
+    project: Project,
+    comment: Comment
+) {
+  /* ... */
+}
+
+func invokeSomeMethod() {
+    /* ... */
+    someMethod(
+        authorName: authorName,
+        project: project,
+        comment: comment
+    )
+}
+```
+
 ## 2.2 Whitespace, Brackets, Parentheses, and Punctuation
 
 * **2.2.1** Add one space after a colon. Do not add a space before the colon. Exceptions to this rule include the ternary operator `? :`, an empty dictionary `[:]`, and `#selector` syntax `(_:)`.
@@ -316,7 +337,7 @@ func configure(withContext context: Context,
 
 * **4.1.2** Use classes only when things have identity or should use reference semantics. Use structs in all other cases.
 
-* **4.1.3** Use computed properties instead of methods for simple transforming fetches (i.e. no parameters, returns an object or value, complexity is ≤ O(1)). 
+* **4.1.3** Use computed properties instead of methods for simple transforming fetches (i.e. no parameters, returns an object or value, complexity is ≤ O(1)).
 
 * **4.1.4** Include the delegate source as the first, unnamed parameter in a delegate method, using the same syntax as Apple's delegate functions:
 
@@ -373,18 +394,18 @@ manager.delegate = self
 * **4.3.2** Use a single `guard` statement to unwrap multiple optionals or check multiple conditions with the same exit path.
 
 ```swift
-guard let message = message, 
+guard let message = message,
     let recipients = message.recipients,
-    !recipients.isEmpty 
+    !recipients.isEmpty
     else { return }
 ```
 
 * **4.3.3** Use a single line break after multi-line `guard` statements
-```swift 
+```swift
 guard let asset = asset,
     let file = asset.file
     else { return }
-    
+
 print(file.displayName)
 ```
 
